@@ -1,9 +1,11 @@
 ﻿using TaskManager;
+using TaskManager.Entities;
 
 class Program
 {
     static void Main()
     {
+        Worker w = new Worker();
         DbConnection dbConnection = new DbConnection();
         dbConnection.CreateTables();
 
@@ -14,9 +16,11 @@ class Program
 
         //Worker worker1 = new Worker("Dan", "Malý");
         //Worker worker2 = new Worker("Jakub", "Černoušek");
+        //Worker worker3 = new Worker("Milan", "Tunelář");
 
         //dbConnection.InsertWorker(worker1);
         //dbConnection.InsertWorker(worker2);
+        //dbConnection.InsertWorker(worker3);
 
         //dbConnection.AddWorkerToTeam(1, 1);
         //dbConnection.AddWorkerToTeam(2, 1);
@@ -44,6 +48,25 @@ class Program
         //dbConnection.AddTaskToProject(4, 1);
 
         //dbConnection.RemoveTaskFromProject(3);
+
+        //Project project2 = new Project("Další projekt");
+        //dbConnection.InsertProject(project2);
+
+        //dbConnection.AddProjectToTeam(2, 1);
+
+        //dbConnection.AddTaskToProject(3, 2);
+
+        //dbConnection.AddTaskToWorker(3, 1);
+
+        //Project project3 = new Project("Poslední projekt");
+        //dbConnection.InsertProject(project3);
+        //dbConnection.AddProjectToTeam(3, 2);
+
+        //dbConnection.AddWorkerToTeam(3, 2);
+
+        //dbConnection.AddTaskToProject(5, 3);
+
+        dbConnection.AddTaskToWorker(4, 3);
 
     }
 }

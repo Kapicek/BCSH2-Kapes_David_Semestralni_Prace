@@ -8,10 +8,12 @@
         public string? Priority { get; set; }
         public string? Status { get; set; }
         public int ProjectId { get; set; }
+        public int? WorkerId { get; set; }
 
         public TaskItem()
         {
             ProjectId = 0;
+            WorkerId = 0;
         }
 
         public TaskItem(string name, string description, string priority, string status, int projectId)
@@ -21,6 +23,7 @@
             Priority = priority;
             Status = status;
             ProjectId = projectId;
+            WorkerId = 0;
         }
 
         public TaskItem(string name, string description, string priority, string status)
@@ -30,6 +33,7 @@
             Priority = priority;
             Status = status;
             ProjectId = 0;
+            WorkerId = 0;
         }
     }
 }

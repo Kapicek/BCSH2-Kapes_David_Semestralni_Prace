@@ -20,7 +20,7 @@ namespace TaskManager
 
                 using (SQLiteCommand createTablesCommand = new SQLiteCommand(connection))
                 {
-                    createTablesCommand.CommandText = "CREATE TABLE IF NOT EXISTS Tasks (Id INTEGER PRIMARY KEY, Name TEXT, Description TEXT, Priority TEXT, Status TEXT, ProjectId INTEGER)";
+                    createTablesCommand.CommandText = "CREATE TABLE IF NOT EXISTS Tasks (Id INTEGER PRIMARY KEY, Name TEXT, Description TEXT, Priority TEXT, Status TEXT, ProjectId INTEGER, WorkerId INTEGER)";
                     createTablesCommand.ExecuteNonQuery();
 
                     createTablesCommand.CommandText = "CREATE TABLE IF NOT EXISTS Teams (Id INTEGER PRIMARY KEY, Name TEXT)";
@@ -101,7 +101,7 @@ namespace TaskManager
             {
                 connection.Open();
 
-                string insertQuery = "INSERT INTO Tasks (Name, Description, Priority, Status, ProjectId) VALUES (@Name, @Description, @Priority, @Status, @ProjectId)";
+                string insertQuery = "INSERT INTO Tasks (Name, Description, Priority, Status, ProjectId, WorkerId) VALUES (@Name, @Description, @Priority, @Status, @ProjectId, @WorkerId)";
                 using (SQLiteCommand command = new SQLiteCommand(insertQuery, connection))
                 {
                     command.Parameters.AddWithValue("@Name", taskItem.Name);
@@ -109,6 +109,7 @@ namespace TaskManager
                     command.Parameters.AddWithValue("@Priority", taskItem.Priority);
                     command.Parameters.AddWithValue("@Status", taskItem.Status);
                     command.Parameters.AddWithValue("@ProjectId", taskItem.ProjectId);
+                    command.Parameters.AddWithValue("@WorkerId", taskItem.WorkerId);
                     command.ExecuteNonQuery();
                 }
             }
@@ -429,6 +430,63 @@ namespace TaskManager
             }
         }
 
+        public void AddTaskToWorker(int taskId, int workerId)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Kontrola existence úkolu a pracovníka
+                if (!IsTaskExists(taskId, connection) || !IsWorkerExists(workerId, connection) || !IsWorkerInTeam(workerId, taskId, connection))
+                {
+                    Console.WriteLine("Přiřazení úkolu pracovníkovi se nepovedlo.");
+                    return;
+                }
+
+                // Aktualizace WorkerId úkolu
+                string updateTaskWorkerQuery = "UPDATE Tasks SET WorkerId = @WorkerId WHERE Id = @TaskId";
+                using (SQLiteCommand updateTaskWorkerCommand = new SQLiteCommand(updateTaskWorkerQuery, connection))
+                {
+                    updateTaskWorkerCommand.Parameters.AddWithValue("@WorkerId", workerId);
+                    updateTaskWorkerCommand.Parameters.AddWithValue("@TaskId", taskId);
+                    updateTaskWorkerCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private bool IsWorkerInTeam(int workerId, int taskId, SQLiteConnection connection)
+        {
+            // Získání TeamId pracovníka
+            string selectWorkerTeamQuery = "SELECT TeamId FROM Workers WHERE Id = @WorkerId";
+            int workerTeamId = 0;
+
+            using (SQLiteCommand selectWorkerTeamCommand = new SQLiteCommand(selectWorkerTeamQuery, connection))
+            {
+                selectWorkerTeamCommand.Parameters.AddWithValue("@WorkerId", workerId);
+                var result = selectWorkerTeamCommand.ExecuteScalar();
+                if (result != null)
+                {
+                    workerTeamId = Convert.ToInt32(result);
+                }
+            }
+
+            // Získání TeamId projektu, na kterém je úkol
+            string selectProjectTeamQuery = "SELECT TeamId FROM TeamProjects WHERE ProjectId = (SELECT ProjectId FROM Tasks WHERE Id = @TaskId)";
+            int projectTeamId = 0;
+
+            using (SQLiteCommand selectProjectTeamCommand = new SQLiteCommand(selectProjectTeamQuery, connection))
+            {
+                selectProjectTeamCommand.Parameters.AddWithValue("@TaskId", taskId);
+                var result = selectProjectTeamCommand.ExecuteScalar();
+                if (result != null)
+                {
+                    projectTeamId = Convert.ToInt32(result);
+                }
+            }
+
+            return workerTeamId == projectTeamId;
+        }
+
 
         private bool IsProjectAssignedToTeam(int projectId, SQLiteConnection connection)
         {
@@ -505,6 +563,5 @@ namespace TaskManager
                 return projectTaskCount > 0;
             }
         }
-
     }
 }
