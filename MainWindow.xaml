@@ -6,7 +6,69 @@
         xmlns:local="clr-namespace:TaskManager"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <ContextMenu x:Key="RecordContextMenu">
+            <MenuItem Header="Edit" Click="EditMenuItem_Click" />
+            <MenuItem Header="Delete" Click="DeleteMenuItem_Click" />
+        </ContextMenu>
+    </Window.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
+        <StackPanel Grid.Column="0" Background="#007ACC">
+            <Button Content="Project" Width="100" Height="30" Margin="10" Click="LoadProjects"/>
+            <Button Content="TaskItem" Width="100" Height="30" Margin="10" Click="LoadTaskItems"/>
+            <Button Content="Team" Width="100" Height="30" Margin="10" Click="LoadTeams"/>
+            <Button Content="Worker" Width="100" Height="30" Margin="10" Click="LoadWorkers"/>
+            <Button Content="+" Width="30" Height="30" Margin="10" Click="AddNew"/>
+        </StackPanel>
+
+        <DataGrid Grid.Column="1" AutoGenerateColumns="True" x:Name="dataGrid" IsReadOnly="True">
+            <DataGrid.Style>
+                <Style TargetType="DataGrid">
+                    <Setter Property="Background" Value="#005A9E"/>
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="BorderBrush" Value="#003D6A"/>
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="RowBackground" Value="#003D6A"/>
+                    <Setter Property="RowHeaderWidth" Value="0" />
+                    <Setter Property="VerticalGridLinesBrush" Value="#003D6A"/>
+                    <Setter Property="HorizontalGridLinesBrush" Value="#003D6A"/>
+                </Style>
+            </DataGrid.Style>
+
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Margin" Value="10" />
+                    <Setter Property="TextBlock.TextAlignment" Value="Left" />
+                    <Setter Property="FontSize" Value="16" />
+                </Style>
+            </DataGrid.CellStyle>
+
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="ContextMenu" Value="{StaticResource RecordContextMenu}" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="#007ACC"/>
+                            <Setter Property="Foreground" Value="Black" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="DataGridColumnHeader">
+                    <Setter Property="Background" Value="#005A9E"/>
+                    <Setter Property="Foreground" Value="White" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="Margin" Value="10" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+        </DataGrid>
     </Grid>
 </Window>

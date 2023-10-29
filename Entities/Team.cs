@@ -7,6 +7,7 @@
 
         public Team()
         {
+            Name = "";
         }
 
         public Team(string name)

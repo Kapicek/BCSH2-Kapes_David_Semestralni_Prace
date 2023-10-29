@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\David\source\repos\TaskManager\obj\Debug\net6.0-windows\
+C:\Users\David\source\repos\BCSH2-Kapes_David_Semestralni_Prace\obj\Debug\net6.0-windows\
 TaskManager
 none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
-C:\Users\David\source\repos\TaskManager\App.xaml
-11407045341
+C:\Users\David\source\repos\BCSH2-Kapes_David_Semestralni_Prace\App.xaml
+5-1527691904
 
-8-1615623309
+12-1835671952
 199196595631
-MainWindow.xaml;
+MainWindow.xaml;NewProjectWindow.xaml;NewTaskItemWindow.xaml;NewTeamWindow.xaml;NewWorkerWindow.xaml;
 
 False
 
