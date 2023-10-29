@@ -454,6 +454,30 @@ namespace TaskManager
             }
         }
 
+        public void RemoveWorkerFromTask(int taskId)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Kontrola existence úkolu
+                if (!IsTaskExists(taskId, connection))
+                {
+                    Console.WriteLine("Odstranění pracovníka z úkolu se nepovedlo.");
+                    return;
+                }
+
+                // Odstranění WorkerId z úkolu
+                string removeWorkerFromTaskQuery = "UPDATE Tasks SET WorkerId = 0 WHERE Id = @TaskId";
+                using (SQLiteCommand removeWorkerFromTaskCommand = new SQLiteCommand(removeWorkerFromTaskQuery, connection))
+                {
+                    removeWorkerFromTaskCommand.Parameters.AddWithValue("@TaskId", taskId);
+                    removeWorkerFromTaskCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+
         private bool IsWorkerInTeam(int workerId, int taskId, SQLiteConnection connection)
         {
             // Získání TeamId pracovníka
@@ -486,6 +510,8 @@ namespace TaskManager
 
             return workerTeamId == projectTeamId;
         }
+
+
 
 
         private bool IsProjectAssignedToTeam(int projectId, SQLiteConnection connection)
@@ -562,6 +588,282 @@ namespace TaskManager
 
                 return projectTaskCount > 0;
             }
+        }
+
+        public void RemoveWorker(int workerId)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Kontrola existence pracovníka
+                if (!IsWorkerExists(workerId, connection))
+                {
+                    Console.WriteLine("Pracovník neexistuje.");
+                    return;
+                }
+
+                // Odstranění pracovníka z tabulky Workers
+                string removeWorkerQuery = "DELETE FROM Workers WHERE Id = @WorkerId";
+                using (SQLiteCommand removeWorkerCommand = new SQLiteCommand(removeWorkerQuery, connection))
+                {
+                    removeWorkerCommand.Parameters.AddWithValue("@WorkerId", workerId);
+                    removeWorkerCommand.ExecuteNonQuery();
+                }
+
+                // Odstranění pracovníka z tabulky TeamWorkers
+                string removeTeamWorkerQuery = "DELETE FROM TeamWorkers WHERE WorkerId = @WorkerId";
+                using (SQLiteCommand removeTeamWorkerCommand = new SQLiteCommand(removeTeamWorkerQuery, connection))
+                {
+                    removeTeamWorkerCommand.Parameters.AddWithValue("@WorkerId", workerId);
+                    removeTeamWorkerCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void RemoveTeam(int teamId)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Kontrola existence týmu
+                if (!IsTeamExists(teamId, connection))
+                {
+                    Console.WriteLine("Tým neexistuje.");
+                    return;
+                }
+
+                // Získání všech pracovníků, kteří jsou členy tohoto týmu
+                List<int> teamMembers = new List<int>();
+                string selectTeamMembersQuery = "SELECT WorkerId FROM TeamWorkers WHERE TeamId = @TeamId";
+                using (SQLiteCommand selectTeamMembersCommand = new SQLiteCommand(selectTeamMembersQuery, connection))
+                {
+                    selectTeamMembersCommand.Parameters.AddWithValue("@TeamId", teamId);
+                    using (SQLiteDataReader reader = selectTeamMembersCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int workerId = reader.GetInt32(reader.GetOrdinal("WorkerId"));
+                            teamMembers.Add(workerId);
+                        }
+                    }
+                }
+
+                // Odstranění všech pracovníků z týmu
+                foreach (int workerId in teamMembers)
+                {
+                    RemoveWorkerFromTeam(workerId);
+                }
+
+                // Odstranění týmu z tabulky Teams
+                string removeTeamQuery = "DELETE FROM Teams WHERE Id = @TeamId";
+                using (SQLiteCommand removeTeamCommand = new SQLiteCommand(removeTeamQuery, connection))
+                {
+                    removeTeamCommand.Parameters.AddWithValue("@TeamId", teamId);
+                    removeTeamCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void RemoveProject(int projectId)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Kontrola existence projektu
+                if (!IsProjectExists(projectId, connection))
+                {
+                    Console.WriteLine("Projekt neexistuje.");
+                    return;
+                }
+
+                // Odstranění všech úkolů, které jsou přiřazeny k tomuto projektu
+                List<int> projectTasks = new List<int>();
+                string selectProjectTasksQuery = "SELECT TaskId FROM ProjectTasks WHERE ProjectId = @ProjectId";
+                using (SQLiteCommand selectProjectTasksCommand = new SQLiteCommand(selectProjectTasksQuery, connection))
+                {
+                    selectProjectTasksCommand.Parameters.AddWithValue("@ProjectId", projectId);
+                    using (SQLiteDataReader reader = selectProjectTasksCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int taskId = reader.GetInt32(reader.GetOrdinal("TaskId"));
+                            projectTasks.Add(taskId);
+                        }
+                    }
+                }
+
+                // Odstranění všech úkolů z projektu
+                foreach (int taskId in projectTasks)
+                {
+                    RemoveTaskFromProject(taskId);
+                }
+
+                // Odstranění projektu z tabulky Projects
+                string removeProjectQuery = "DELETE FROM Projects WHERE Id = @ProjectId";
+                using (SQLiteCommand removeProjectCommand = new SQLiteCommand(removeProjectQuery, connection))
+                {
+                    removeProjectCommand.Parameters.AddWithValue("@ProjectId", projectId);
+                    removeProjectCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void RemoveTask(int taskId)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Kontrola existence úkolu
+                if (!IsTaskExists(taskId, connection))
+                {
+                    Console.WriteLine("Úkol neexistuje.");
+                    return;
+                }
+
+                // Odstranění úkolu z všech projektů, pokud je někde přiřazen
+                if (IsTaskAssignedToProject(taskId, connection))
+                {
+                    RemoveTaskFromProject(taskId);
+                }
+
+                // Odstranění úkolu z týmu, pokud je nějakému týmu přiřazen
+                RemoveWorkerFromTask(taskId);
+
+                // Odstranění úkolu z tabulky Tasks
+                string removeTaskQuery = "DELETE FROM Tasks WHERE Id = @TaskId";
+                using (SQLiteCommand removeTaskCommand = new SQLiteCommand(removeTaskQuery, connection))
+                {
+                    removeTaskCommand.Parameters.AddWithValue("@TaskId", taskId);
+                    removeTaskCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public List<Worker> GetWorkers()
+        {
+            List<Worker> workers = new List<Worker>();
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string selectWorkersQuery = "SELECT * FROM Workers";
+
+                using (SQLiteCommand selectWorkersCommand = new SQLiteCommand(selectWorkersQuery, connection))
+                using (SQLiteDataReader reader = selectWorkersCommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Worker worker = new Worker
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
+                            LastName = reader.GetString(reader.GetOrdinal("LastName")),
+                            TeamId = reader.GetInt32(reader.GetOrdinal("TeamId"))
+                        };
+
+                        workers.Add(worker);
+                    }
+                }
+            }
+
+            return workers;
+        }
+
+        public List<Team> GetTeams()
+        {
+            List<Team> teams = new List<Team>();
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string selectTeamsQuery = "SELECT * FROM Teams";
+
+                using (SQLiteCommand selectTeamsCommand = new SQLiteCommand(selectTeamsQuery, connection))
+                using (SQLiteDataReader reader = selectTeamsCommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Team team = new Team
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name"))
+                        };
+
+                        teams.Add(team);
+                    }
+                }
+            }
+
+            return teams;
+        }
+
+        public List<Project> GetProjects()
+        {
+            List<Project> projects = new List<Project>();
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string selectProjectsQuery = "SELECT * FROM Projects";
+
+                using (SQLiteCommand selectProjectsCommand = new SQLiteCommand(selectProjectsQuery, connection))
+                using (SQLiteDataReader reader = selectProjectsCommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Project project = new Project
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            TeamId = reader.GetInt32(reader.GetOrdinal("TeamId"))
+                        };
+
+                        projects.Add(project);
+                    }
+                }
+            }
+
+            return projects;
+        }
+
+        public List<TaskItem> GetTasks()
+        {
+            List<TaskItem> tasks = new List<TaskItem>();
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string selectTasksQuery = "SELECT * FROM Tasks";
+
+                using (SQLiteCommand selectTasksCommand = new SQLiteCommand(selectTasksQuery, connection))
+                using (SQLiteDataReader reader = selectTasksCommand.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        TaskItem task = new TaskItem
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            Description = reader.GetString(reader.GetOrdinal("Description")),
+                            Priority = reader.GetString(reader.GetOrdinal("Priority")),
+                            Status = reader.GetString(reader.GetOrdinal("Status")),
+                            ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId")),
+                            WorkerId = reader.GetInt32(reader.GetOrdinal("WorkerId"))
+                        };
+
+                        tasks.Add(task);
+                    }
+                }
+            }
+            return tasks;
         }
     }
 }

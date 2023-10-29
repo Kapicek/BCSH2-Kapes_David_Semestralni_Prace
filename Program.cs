@@ -63,10 +63,6 @@ class Program
         //dbConnection.AddProjectToTeam(3, 2);
 
         //dbConnection.AddWorkerToTeam(3, 2);
-
         //dbConnection.AddTaskToProject(5, 3);
-
-        dbConnection.AddTaskToWorker(4, 3);
-
     }
 }
