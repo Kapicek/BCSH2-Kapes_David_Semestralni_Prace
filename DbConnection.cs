@@ -46,64 +46,82 @@ namespace TaskManager
             }
         }
 
-
-        public void InsertTeam(Team team)
+        public int InsertTeam(Team team)
         {
+            int insertedId = -1; // Nastavíme výchozí hodnotu, pokud vložení selže.
+
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
                 // Vložíme tým do tabulky Teams
-                string insertTeamQuery = "INSERT INTO Teams (Name) VALUES (@Name)";
+                string insertTeamQuery = "INSERT INTO Teams (Name) VALUES (@Name); SELECT last_insert_rowid()";
                 using (SQLiteCommand teamCommand = new SQLiteCommand(insertTeamQuery, connection))
                 {
                     teamCommand.Parameters.AddWithValue("@Name", team.Name);
-                    teamCommand.ExecuteNonQuery();
+
+                    insertedId = Convert.ToInt32(teamCommand.ExecuteScalar()); // Získáme ID nově vloženého týmu.
                 }
             }
+
+            return insertedId; // Vracíme ID nově vloženého týmu.
         }
 
-        public void InsertProject(Project project)
+        public int InsertProject(Project project)
         {
+            int insertedId = -1;
+
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
                 // Vložíme projekt do tabulky Projects
-                string insertProjectQuery = "INSERT INTO Projects (Name, TeamId) VALUES (@Name, @TeamId)";
+                string insertProjectQuery = "INSERT INTO Projects (Name, TeamId) VALUES (@Name, @TeamId); SELECT last_insert_rowid()";
                 using (SQLiteCommand projectCommand = new SQLiteCommand(insertProjectQuery, connection))
                 {
                     projectCommand.Parameters.AddWithValue("@Name", project.Name);
                     projectCommand.Parameters.AddWithValue("@TeamId", project.TeamId);
-                    projectCommand.ExecuteNonQuery();
+
+                    insertedId = Convert.ToInt32(projectCommand.ExecuteScalar()); // Získáme ID nově vloženého projektu.
                 }
             }
+
+            return insertedId;
         }
 
-        public void InsertWorker(Worker worker)
+
+        public int InsertWorker(Worker worker)
         {
+            int insertedId = -1; // Nastavíme výchozí hodnotu, pokud vložení selže.
+
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
-                string insertQuery = "INSERT INTO Workers (FirstName, LastName, TeamId) VALUES (@FirstName, @LastName, @TeamId)";
+                string insertQuery = "INSERT INTO Workers (FirstName, LastName, TeamId) VALUES (@FirstName, @LastName, @TeamId); SELECT last_insert_rowid()";
                 using (SQLiteCommand command = new SQLiteCommand(insertQuery, connection))
                 {
                     command.Parameters.AddWithValue("@FirstName", worker.FirstName);
                     command.Parameters.AddWithValue("@LastName", worker.LastName);
                     command.Parameters.AddWithValue("@TeamId", worker.TeamId);
-                    command.ExecuteNonQuery();
+
+                    insertedId = Convert.ToInt32(command.ExecuteScalar()); // Získáme ID nově vloženého pracovníka.
                 }
             }
+
+            return insertedId; // Vracíme ID nově vloženého pracovníka.
         }
 
-        public void InsertTaskItem(TaskItem taskItem)
+
+        public int InsertTaskItem(TaskItem taskItem)
         {
+            int insertedId = -1; // Nastavíme výchozí hodnotu, pokud vložení selže.
+
             using (SQLiteConnection connection = new SQLiteConnection(connectionString))
             {
                 connection.Open();
 
-                string insertQuery = "INSERT INTO Tasks (Name, Description, Priority, Status, ProjectId, WorkerId) VALUES (@Name, @Description, @Priority, @Status, @ProjectId, @WorkerId)";
+                string insertQuery = "INSERT INTO Tasks (Name, Description, Priority, Status, ProjectId, WorkerId) VALUES (@Name, @Description, @Priority, @Status, @ProjectId, @WorkerId); SELECT last_insert_rowid()";
                 using (SQLiteCommand command = new SQLiteCommand(insertQuery, connection))
                 {
                     command.Parameters.AddWithValue("@Name", taskItem.Name);
@@ -112,9 +130,12 @@ namespace TaskManager
                     command.Parameters.AddWithValue("@Status", taskItem.Status);
                     command.Parameters.AddWithValue("@ProjectId", taskItem.ProjectId);
                     command.Parameters.AddWithValue("@WorkerId", taskItem.WorkerId);
-                    command.ExecuteNonQuery();
+
+                    insertedId = Convert.ToInt32(command.ExecuteScalar()); // Získáme ID nově vloženého úkolu.
                 }
             }
+
+            return insertedId; // Vracíme ID nově vloženého úkolu.
         }
 
         public void AddWorkerToTeam(int workerId, int teamId)

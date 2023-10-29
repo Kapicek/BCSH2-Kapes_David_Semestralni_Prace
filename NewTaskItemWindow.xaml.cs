@@ -38,7 +38,8 @@ namespace TaskManager
                     Project selectedProject = (Project)ProjectComboBox.SelectedItem;
                     if (selectedProject != null)
                     {
-                        dbConnection.InsertTaskItem(new TaskItem(Name.Text, Description.Text, Priority.Text, Status.Text, selectedProject.Id));
+                        int id = dbConnection.InsertTaskItem(new TaskItem(Name.Text, Description.Text, Priority.Text, Status.Text));
+                        dbConnection.AddTaskToProject(id, selectedProject.Id);
                         this.Close();
                     }
                     else

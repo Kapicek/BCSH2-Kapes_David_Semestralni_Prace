@@ -38,7 +38,8 @@ namespace TaskManager
                     Team selectedTeam = (Team)TeamComboBox.SelectedItem;
                     if (selectedTeam != null)
                     {
-                        dbConnection.InsertWorker(new Worker(FirstName.Text, LastName.Text, selectedTeam.Id));
+                        int id = dbConnection.InsertWorker(new Worker(FirstName.Text, LastName.Text));
+                        dbConnection.AddWorkerToTeam(id, selectedTeam.Id);
                         this.Close();
                     }
                     else

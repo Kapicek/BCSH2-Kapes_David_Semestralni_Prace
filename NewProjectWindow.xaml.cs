@@ -39,7 +39,8 @@ namespace TaskManager
                     Team selectedTeam = (Team)TeamComboBox.SelectedItem;
                     if (selectedTeam != null)
                     {
-                        dbConnection.InsertProject(new Project(Name.Text, selectedTeam.Id));
+                        int id = dbConnection.InsertProject(new Project(Name.Text));
+                        dbConnection.AddProjectToTeam(id, selectedTeam.Id);
                         this.Close();
                     }
                     else

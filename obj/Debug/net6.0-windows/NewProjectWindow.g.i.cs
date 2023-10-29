@@ -77,7 +77,7 @@ namespace TaskManager {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/TaskManager;V1.0.0.0;component/newprojectwindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/TaskManager;component/newprojectwindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NewProjectWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
