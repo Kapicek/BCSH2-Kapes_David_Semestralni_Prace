@@ -1,52 +1,24 @@
 ﻿using System.Windows;
-using TaskManager.Entities;
+using TaskManager.ViewModels;
 
 namespace TaskManager
 {
     public partial class NewWorkerWindow : Window
     {
-        DbConnection dbConnection;
-        Team? selectedTeam;
+        NewWorkerViewModel viewModel;
         public NewWorkerWindow()
         {
             InitializeComponent();
-            dbConnection = new DbConnection();
-            dbConnection.CreateTables();
-
-            TeamComboBox.ItemsSource = dbConnection.GetTeams();
-            TeamComboBox.DisplayMemberPath = "Name";
-
-            AddToTeamCheckBox.Checked += AddToTeamCheckBox_Checked;
-            AddToTeamCheckBox.Unchecked += AddToTeamCheckBox_Unchecked;
+            viewModel = new NewWorkerViewModel();
+            DataContext = viewModel;
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(FirstName.Text) || string.IsNullOrWhiteSpace(LastName.Text))
+            bool result = viewModel.OK();
+            if (result)
             {
-                MessageBox.Show("Prosím, vyplňte jméno a příjmení.", "Chybějící údaje", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
-            else
-            {
-                if (AddToTeamCheckBox.IsChecked == false)
-                {
-                    dbConnection.InsertWorker(new Worker(FirstName.Text, LastName.Text));
-                    this.Close();
-                }
-                else
-                {
-                    Team selectedTeam = (Team)TeamComboBox.SelectedItem;
-                    if (selectedTeam != null)
-                    {
-                        int id = dbConnection.InsertWorker(new Worker(FirstName.Text, LastName.Text));
-                        dbConnection.AddWorkerToTeam(id, selectedTeam.Id);
-                        this.Close();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Prosím, vyberte si kam chcete pracovníka přiřadit", "Chybějící údaje", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                    }
-                }
+                this.Close();
             }
         }
 
@@ -55,15 +27,15 @@ namespace TaskManager
             this.Close();
         }
 
-        private void AddToTeamCheckBox_Checked(object sender, RoutedEventArgs e)
+        private void AddToWorkerCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            selectedTeam = null; // Nulování před novým výběrem
             TeamComboBox.Visibility = Visibility.Visible;
         }
 
-        private void AddToTeamCheckBox_Unchecked(object sender, RoutedEventArgs e)
+        private void AddToWorkerCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             TeamComboBox.Visibility = Visibility.Collapsed;
         }
+
     }
 }

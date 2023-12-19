@@ -3,9 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TaskManager"
+        xmlns:local="clr-namespace:TaskManager.ViewModels"
         mc:Ignorable="d"
-        Title="New Project" Height="350" Width="400">
+        Title="New Project" Height="270" Width="462">
+    
+    <Window.DataContext>
+        <local:NewProjectViewModel />
+    </Window.DataContext>
+
     <Grid Background="#D5E3F2">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -24,16 +29,26 @@
         <TextBlock Grid.Row="0" Grid.Column="1" Text="New Project" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,20" />
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Name:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" />
-        <TextBox Grid.Row="1" Grid.Column="1" Name="Name" Margin="10" MinWidth="200" />
+        <TextBox Grid.Row="1" Grid.Column="1" Name="Name" Margin="10" MinWidth="200" Text="{Binding ProjectName}" />
+        <CheckBox Grid.Row="2" Grid.Column="1" Name="AddToTeamCheckBox" Content="Add to team" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" IsChecked="{Binding AddToTeamChecked}" />
 
-        <CheckBox Grid.Row="2" Grid.Column="1" Name="AddToTeamCheckBox" Content="Add to team" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" />
-
-        <ComboBox Grid.Row="3" Grid.Column="1" Name="TeamComboBox" Margin="10" MinWidth="200" Visibility="Collapsed">
+        <ComboBox Grid.Row="3" Grid.Column="1" Name="TeamComboBox" Margin="10" MinWidth="200"
+          ItemsSource="{Binding Teams}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedTeam}">
+            <ComboBox.Style>
+                <Style TargetType="ComboBox">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AddToTeamChecked}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ComboBox.Style>
         </ComboBox>
 
         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
-            <Button Content="OK" Width="80" Click="OK_Click" Background="#005A9E" Foreground="White" />
-            <Button Content="Cancel" Width="80" Click="Cancel_Click" Background="#005A9E" Foreground="White" Margin="10,0,0,0" />
+            <Button Content="OK" Width="80" Background="#005A9E" Foreground="White" Click="Ok_Click"/>
+            <Button Content="Cancel" Width="80" Background="#005A9E" Foreground="White" Margin="10,0,0,0" Click="Cancel_Click"/>
         </StackPanel>
     </Grid>
 </Window>

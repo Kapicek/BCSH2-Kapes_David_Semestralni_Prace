@@ -3,9 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:TaskManager"
+        xmlns:local="clr-namespace:TaskManager.ViewModels"
         mc:Ignorable="d"
         Title="New Worker" Height="350" Width="400">
+
+    <Window.DataContext>
+        <local:NewWorkerViewModel />
+    </Window.DataContext>
+
     <Grid Background="#D5E3F2">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -24,14 +29,14 @@
         <TextBlock Grid.Row="0" Grid.Column="1" Text="New Worker" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,20" />
 
         <TextBlock Grid.Row="1" Grid.Column="0" Text="First Name:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" />
-        <TextBox Grid.Row="1" Grid.Column="1" Name="FirstName" Margin="10" MinWidth="200" />
+        <TextBox Grid.Row="1" Grid.Column="1" Name="FirstName" Margin="10" MinWidth="200" Text="{Binding FirstName}" />
 
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Last Name:" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10" />
-        <TextBox Grid.Row="2" Grid.Column="1" Name="LastName" Margin="10" MinWidth="200" />
+        <TextBox Grid.Row="2" Grid.Column="1" Name="LastName" Margin="10" MinWidth="200" Text="{Binding LastName}"/>
 
-        <CheckBox Grid.Row="3" Grid.Column="1" Name="AddToTeamCheckBox" Content="Add to team" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" />
+        <CheckBox Grid.Row="3" Grid.Column="1" Name="AddToTeamCheckBox" Content="Add to team" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10" IsChecked="{Binding AddToTeamChecked}" Checked="AddToWorkerCheckBox_Checked" Unchecked="AddToWorkerCheckBox_Unchecked"/>
 
-        <ComboBox Grid.Row="4" Grid.Column="1" Name="TeamComboBox" Margin="10" MinWidth="200" Visibility="Collapsed">
+        <ComboBox Grid.Row="4" Grid.Column="1" Name="TeamComboBox" Margin="10" MinWidth="200" Visibility="Collapsed" ItemsSource="{Binding Teams}" SelectedItem="{Binding SelectedTeam}">
         </ComboBox>
 
         <StackPanel Grid.Row="5" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">

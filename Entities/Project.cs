@@ -1,6 +1,6 @@
 ﻿namespace TaskManager.Entities
 {
-    class Project
+    public class Project
     {
         public int Id { get; set; }
         public string? Name { get; set; }
@@ -21,6 +21,11 @@
         public Project()
         {
             TeamId = 0;
+        }
+
+        public override string ToString()
+        {
+            return $"Project Name: {Name}";
         }
     }
 }

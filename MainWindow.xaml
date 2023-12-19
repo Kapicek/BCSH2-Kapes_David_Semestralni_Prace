@@ -18,15 +18,16 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0" Background="#007ACC">
-            <Button Content="Project" Width="100" Height="30" Margin="10" Click="LoadProjects"/>
-            <Button Content="TaskItem" Width="100" Height="30" Margin="10" Click="LoadTaskItems"/>
-            <Button Content="Team" Width="100" Height="30" Margin="10" Click="LoadTeams"/>
-            <Button Content="Worker" Width="100" Height="30" Margin="10" Click="LoadWorkers"/>
-            <Button Content="+" Width="30" Height="30" Margin="10" Click="AddNew"/>
-        </StackPanel>
+<StackPanel Grid.Column="0" Background="#007ACC">
+    <Button Content="Project" Width="100" Height="30" Margin="10" Command="{Binding LoadProjectsCommand}" />
+    <Button Content="TaskItem" Width="100" Height="30" Margin="10" Command="{Binding LoadTaskItemsCommand}" />
+    <Button Content="Team" Width="100" Height="30" Margin="10" Command="{Binding LoadTeamsCommand}" />
+    <Button Content="Worker" Width="100" Height="30" Margin="10" Command="{Binding LoadWorkersCommand}" />
+    <Button Content="+" Width="30" Height="30" Margin="10" Command="{Binding AddNewCommand}" />
+</StackPanel>
 
-        <DataGrid Grid.Column="1" AutoGenerateColumns="True" x:Name="dataGrid" IsReadOnly="True">
+
+        <DataGrid Grid.Column="1" AutoGenerateColumns="True" x:Name="dataGrid" IsReadOnly="True" ItemsSource="{Binding Items}">
             <DataGrid.Style>
                 <Style TargetType="DataGrid">
                     <Setter Property="Background" Value="#005A9E"/>

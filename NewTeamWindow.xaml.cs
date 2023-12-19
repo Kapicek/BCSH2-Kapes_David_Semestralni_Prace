@@ -1,29 +1,25 @@
 ﻿using System.Windows;
-using TaskManager.Entities;
+using TaskManager.ViewModels;
 
 namespace TaskManager
 {
     public partial class NewTeamWindow : Window
     {
-        DbConnection dbConnection;
+        NewTeamViewModel viewModel;
         public NewTeamWindow()
         {
             InitializeComponent();
-            dbConnection = new DbConnection();
-            dbConnection.CreateTables();
+            viewModel = new NewTeamViewModel();
+            DataContext = viewModel;
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(TeamName.Text))
+            bool result = viewModel.OK();
+            if (result)
             {
-                MessageBox.Show("Prosím doplňte název týmu", "Chybějící údaje", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                this.Close();
             }
-            else
-            {
-                dbConnection.InsertTeam(new Team(TeamName.Text));
-            }
-            this.Close();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
