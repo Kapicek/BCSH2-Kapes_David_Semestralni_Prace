@@ -32,6 +32,7 @@
             <Button Content="Assign task" Width="100" Height="30" Margin="10" Command="{Binding AssignTaskCommand}" />
             <Button Content="Worker info" Width="100" Height="30" Margin="10" Command="{Binding ShowWorkerInfoCommand}" />
             <Button Content="Add new" Width="64" Height="30" Margin="10" Command="{Binding AddNewCommand}" />
+            <TextBlock Text="PTM pro editaci/mazání" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="10" Foreground="White" Margin="0,10,0,0" />
         </StackPanel>
 
         <DataGrid Grid.Column="1" AutoGenerateColumns="True" x:Name="dataGrid" IsReadOnly="True" ItemsSource="{Binding Items}">
