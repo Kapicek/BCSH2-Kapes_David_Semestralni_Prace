@@ -7,6 +7,8 @@
         public string? LastName { get; set; }
         public int TeamId { get; set; }
 
+        public string Name => $"{FirstName} {LastName}";
+
         public Worker() { TeamId = 0; }
 
         public Worker(string firstName, string lastName)
@@ -21,6 +23,11 @@
             FirstName = firstName;
             LastName = lastName;
             TeamId = teamId;
+        }
+
+        public override string ToString()
+        {
+            return $"{FirstName} {LastName}";
         }
     }
 }

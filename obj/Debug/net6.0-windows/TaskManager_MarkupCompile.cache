@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
 C:\Users\David\source\repos\BCSH2-Kapes_David_Semestralni_Prace\App.xaml
-5-1527691904
+71861846822
 
-20-445531372
+241987701048
 199196595631
-MainWindow.xaml;NewProjectWindow.xaml;NewTaskItemWindow.xaml;NewTeamWindow.xaml;NewWorkerWindow.xaml;
+AssignWorkerWindow.xaml;MainWindow.xaml;NewProjectWindow.xaml;NewTaskItemWindow.xaml;NewTeamWindow.xaml;NewWorkerWindow.xaml;WorkerInfoWindow.xaml;
 
 False
 

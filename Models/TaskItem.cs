@@ -35,5 +35,10 @@
             ProjectId = 0;
             WorkerId = 0;
         }
+
+        public override string ToString()
+        {
+            return $"{Name} -> {Description}\nPriorita {Priority} -> {Status}";
+        }
     }
 }

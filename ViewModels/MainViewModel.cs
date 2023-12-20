@@ -27,7 +27,8 @@ namespace TaskManager.ViewModels
         public ICommand LoadTeamsCommand => new RelayCommand(LoadTeams);
         public ICommand LoadWorkersCommand => new RelayCommand(LoadWorkers);
         public ICommand AddNewCommand => new RelayCommand(AddNew);
-        public ICommand AssignTask => new RelayCommand(AssignTaskToWorker);
+        public ICommand AssignTaskCommand => new RelayCommand(AssignTaskToWorker);
+        public ICommand ShowWorkerInfoCommand => new RelayCommand(ShowWorkerInfo);
         public MainViewModel()
         {
             dbConnection = new DbConnection();
@@ -44,8 +45,16 @@ namespace TaskManager.ViewModels
                 OnPropertyChanged(nameof(CategoryName));
             }
         }
-
-        public void AssignTaskToWorker() { }
+        public void ShowWorkerInfo()
+        {
+            WorkerInfoWindow workerInfoWindow = new WorkerInfoWindow();
+            workerInfoWindow.Show();
+        }
+        public void AssignTaskToWorker()
+        {
+            AssignWorkerWindow assignWorkerWindow = new AssignWorkerWindow();
+            assignWorkerWindow.Show();
+        }
         public void LoadProjects()
         {
             Items = new ObservableCollection<object>(dbConnection.GetProjects());

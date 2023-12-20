@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TaskManager.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="459" Width="1027">
 
     <Window.DataContext>
         <local:MainViewModel />
@@ -30,6 +30,7 @@
             <Button Content="Teams" Width="100" Height="30" Margin="10" Command="{Binding LoadTeamsCommand}" />
             <Button Content="Workers" Width="100" Height="30" Margin="10" Command="{Binding LoadWorkersCommand}" />
             <Button Content="Assign task" Width="100" Height="30" Margin="10" Command="{Binding AssignTaskCommand}" />
+            <Button Content="Worker info" Width="100" Height="30" Margin="10" Command="{Binding ShowWorkerInfoCommand}" />
             <Button Content="Add new" Width="64" Height="30" Margin="10" Command="{Binding AddNewCommand}" />
         </StackPanel>
 

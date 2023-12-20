@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using TaskManager.Entities;
 
@@ -59,7 +60,12 @@ namespace TaskManager.ViewModels
             if (editProject != null)
             {
                 projectName = editProject.Name;
-                if (EditProject?.TeamId != null) addToTeamChecked = false;
+                if (EditProject?.TeamId != null) addToTeamChecked = true;
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    SelectedTeam = Teams.FirstOrDefault(team => team.Id == EditProject.TeamId);
+                });
             }
         }
 
@@ -88,6 +94,10 @@ namespace TaskManager.ViewModels
                 {
                     if (SelectedTeam != null)
                     {
+                        if (EditProject != null)
+                        {
+                            dbConnection.RemoveProjectFromTeam(projectId);
+                        }
                         dbConnection.AddProjectToTeam(projectId, SelectedTeam.Id);
                     }
                     else

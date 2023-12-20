@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using TaskManager.Entities;
 
@@ -32,12 +33,16 @@ namespace TaskManager.ViewModels
             EditWorker = editWorker;
             if (EditWorker != null)
             {
-                firstName = EditWorker.FirstName;
-                lastName = EditWorker.LastName;
-                if (EditWorker?.TeamId != null) addToTeamChecked = false;
+                FirstName = EditWorker.FirstName;
+                LastName = EditWorker.LastName;
+                if (EditWorker?.TeamId != null) AddToTeamChecked = true;
+
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    SelectedTeam = Teams.FirstOrDefault(team => team.Id == EditWorker.TeamId);
+                });
             }
         }
-
 
         public bool OK()
         {
@@ -65,19 +70,14 @@ namespace TaskManager.ViewModels
                 {
                     if (SelectedTeam != null)
                     {
+                        if (EditWorker != null)
+                        {
+                            dbConnection.RemoveWorkerFromTeam(workerId);
+                        }
                         dbConnection.AddWorkerToTeam(workerId, SelectedTeam.Id);
-                        return true;
-                    }
-                    else
-                    {
-                        MessageBox.Show("Prosím, vyberte si kam chcete pracovníka přiřadit", "Chybějící údaje", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                        return false;
                     }
                 }
-                else
-                {
-                    return true;
-                }
+                return true;
             }
         }
     }

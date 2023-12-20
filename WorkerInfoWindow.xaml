@@ -1,0 +1,25 @@
+﻿<Window x:Class="TaskManager.WorkerInfoWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TaskManager.ViewModels"
+        mc:Ignorable="d"
+        Title="WorkerInfoWindow" Height="573" Width="837">
+    <Window.DataContext>
+        <local:WorkerInfoViewModel />
+    </Window.DataContext>
+    <Grid Background="#F0F0F0">
+        <!-- Light gray background -->
+        <StackPanel Margin="20">
+            <ComboBox ItemsSource="{Binding Workers}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedWorker}" Margin="10"/>
+            <TextBlock Text="{Binding SelectedWorker.Name}" FontSize="16" FontWeight="Bold" Margin="10"/>
+            <TextBlock Text="{Binding TeamName}" Margin="10"/>
+            <ListBox ItemsSource="{Binding SelectedTeamProjects}" Margin="10" Height="150" Background="#E6F7FF">
+            </ListBox>
+            <TextBlock Text="Přiřazené úkoly:" Margin="10"/>
+            <ListBox ItemsSource="{Binding SelectedTasks}" Margin="10" Height="150" Background="#E6F7FF">
+            </ListBox>
+        </StackPanel>
+    </Grid>
+</Window>

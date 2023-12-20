@@ -79,3 +79,7 @@ C:\Users\David\Source\Repos\BCSH2-Kapes_David_Semestralni_Prace\obj\Debug\net6.0
 C:\Users\David\Source\Repos\BCSH2-Kapes_David_Semestralni_Prace\obj\Debug\net6.0-windows\NewProjectWindow.g.cs
 C:\Users\David\Source\Repos\BCSH2-Kapes_David_Semestralni_Prace\obj\Debug\net6.0-windows\NewProjectWindow.baml
 C:\Users\David\source\repos\BCSH2-Kapes_David_Semestralni_Prace\obj\Debug\net6.0-windows\GeneratedInternalTypeHelper.g.cs
+C:\Users\David\source\repos\BCSH2-Kapes_David_Semestralni_Prace\obj\Debug\net6.0-windows\AssignWorkerWindow.g.cs
+C:\Users\David\source\repos\BCSH2-Kapes_David_Semestralni_Prace\obj\Debug\net6.0-windows\AssignWorkerWindow.baml
+C:\Users\David\source\repos\BCSH2-Kapes_David_Semestralni_Prace\obj\Debug\net6.0-windows\WorkerInfoWindow.g.cs
+C:\Users\David\source\repos\BCSH2-Kapes_David_Semestralni_Prace\obj\Debug\net6.0-windows\WorkerInfoWindow.baml

@@ -13,10 +13,10 @@ namespace TaskManager
             viewModel = new NewProjectViewModel(editProject);
             DataContext = viewModel;
 
-            if (editProject != null && editProject.TeamId != 0)
-            {
-                AddToTeamCheckBox.Visibility = Visibility.Collapsed;
-            }
+            //if (editProject != null && editProject.TeamId != 0)
+            //{
+            //    AddToTeamCheckBox.Visibility = Visibility.Collapsed;
+            //}
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)

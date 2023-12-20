@@ -12,17 +12,12 @@ namespace TaskManager
             InitializeComponent();
             viewModel = new NewWorkerViewModel(editWorker);
             DataContext = viewModel;
-            if (editWorker != null && editWorker.TeamId != 0)
-            {
-                AddToTeamCheckBox.Visibility = Visibility.Collapsed;
-            }
         }
 
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
-            bool result = viewModel.OK();
-            if (result)
+            if (viewModel.OK())
             {
                 this.Close();
             }
