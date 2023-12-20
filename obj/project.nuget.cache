@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Sg0lGDDeYTAdy1/Ao4nwecSGn2q16TpWPxVJSdOVzWMnPSzijVBZKgV7B1GAfNQUVc5FoI+1ntJjj2+IJeVRXg==",
+  "dgSpecHash": "HFMi7B0LlJbACaCvQVjHMlzMAnVmsClucpsqiTFLWfvOnciErRuK1E3yLldTm8Oh3nf1e3qt/dsZv1bbDGUiqw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\David\\source\\repos\\BCSH2-Kapes_David_Semestralni_Prace\\TaskManager.csproj",
+  "projectFilePath": "C:\\Users\\David\\Source\\Repos\\BCSH2-Kapes_David_Semestralni_Prace\\TaskManager.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\David\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
     "C:\\Users\\David\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",

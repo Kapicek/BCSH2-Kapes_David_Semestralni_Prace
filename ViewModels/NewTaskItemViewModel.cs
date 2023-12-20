@@ -127,7 +127,6 @@ namespace TaskManager.ViewModels
                     if (selectedProject != null)
                     {
                         dbConnection.AddTaskToProject(taskItemId, selectedProject.Id);
-                        return true;
                     }
                     else
                     {
@@ -135,7 +134,7 @@ namespace TaskManager.ViewModels
                     }
                 }
             }
-            return false;
+            return true;
         }
     }
 }
