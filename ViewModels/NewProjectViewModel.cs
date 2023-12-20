@@ -11,6 +11,9 @@ namespace TaskManager.ViewModels
         private bool addToTeamChecked;
         private Team selectedTeam;
 
+        private Project EditProject;
+
+        public NewProjectViewModel() { }
         public ObservableCollection<Team> Teams { get; set; }
         //public ICommand OKCommand => new RelayCommand(OK);
 
@@ -44,12 +47,20 @@ namespace TaskManager.ViewModels
             }
         }
 
-        public NewProjectViewModel()
+        public NewProjectViewModel(Project editProject)
         {
             dbConnection = new DbConnection();
             dbConnection.CreateTables();
 
+            EditProject = editProject;
+
             Teams = new ObservableCollection<Team>(dbConnection.GetTeams());
+
+            if (editProject != null)
+            {
+                projectName = editProject.Name;
+                if (EditProject?.TeamId != null) addToTeamChecked = false;
+            }
         }
 
         public bool OK()
@@ -61,7 +72,17 @@ namespace TaskManager.ViewModels
             }
             else
             {
-                int projectId = dbConnection.InsertProject(new Project(ProjectName));
+                int projectId;
+                if (EditProject == null)
+                {
+                    projectId = dbConnection.InsertProject(new Project(ProjectName));
+                }
+                else
+                {
+                    EditProject.Name = ProjectName;
+                    dbConnection.UpdateProject(EditProject);
+                    projectId = EditProject.Id;
+                }
 
                 if (AddToTeamChecked)
                 {
@@ -76,7 +97,6 @@ namespace TaskManager.ViewModels
                     }
                 }
 
-                MessageBox.Show("Project added successfully.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 return true;
             }
         }

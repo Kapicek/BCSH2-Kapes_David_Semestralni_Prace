@@ -12,60 +12,32 @@ namespace TaskManager.ViewModels
         private bool addToTeamChecked;
         private Team selectedTeam;
 
+        public Worker EditWorker { get; set; }
         public ObservableCollection<Team> Teams { get; set; }
 
-        public string FirstName
-        {
-            get => firstName;
-            set
-            {
-                firstName = value;
-                OnPropertyChanged(nameof(FirstName));
-            }
-        }
-
-        public string LastName
-        {
-            get => lastName;
-            set
-            {
-                lastName = value;
-                OnPropertyChanged(nameof(LastName));
-            }
-        }
-
-        public bool AddToTeamChecked
-        {
-            get => addToTeamChecked;
-            set
-            {
-                addToTeamChecked = value;
-                OnPropertyChanged(nameof(AddToTeamChecked));
-                if (!addToTeamChecked)
-                {
-                    SelectedTeam = null;
-                }
-            }
-        }
-
-        public Team SelectedTeam
-        {
-            get => selectedTeam;
-            set
-            {
-                selectedTeam = value;
-                OnPropertyChanged(nameof(SelectedTeam));
-            }
-        }
+        public string FirstName { get => firstName; set { firstName = value; OnPropertyChanged(nameof(FirstName)); } }
+        public string LastName { get => lastName; set { lastName = value; OnPropertyChanged(nameof(LastName)); } }
+        public bool AddToTeamChecked { get => addToTeamChecked; set { addToTeamChecked = value; OnPropertyChanged(nameof(AddToTeamChecked)); if (!addToTeamChecked) SelectedTeam = null; } }
+        public Team SelectedTeam { get => selectedTeam; set { selectedTeam = value; OnPropertyChanged(nameof(SelectedTeam)); } }
 
         public NewWorkerViewModel()
         {
             dbConnection = new DbConnection();
             dbConnection.CreateTables();
-
             Teams = new ObservableCollection<Team>(dbConnection.GetTeams());
-
         }
+
+        public NewWorkerViewModel(Worker editWorker) : this()
+        {
+            EditWorker = editWorker;
+            if (EditWorker != null)
+            {
+                firstName = EditWorker.FirstName;
+                lastName = EditWorker.LastName;
+                if (EditWorker?.TeamId != null) addToTeamChecked = false;
+            }
+        }
+
 
         public bool OK()
         {
@@ -76,7 +48,18 @@ namespace TaskManager.ViewModels
             }
             else
             {
-                int workerId = dbConnection.InsertWorker(new Worker(FirstName, LastName));
+                int workerId;
+                if (EditWorker == null)
+                {
+                    workerId = dbConnection.InsertWorker(new Worker(FirstName, LastName));
+                }
+                else
+                {
+                    EditWorker.FirstName = FirstName;
+                    EditWorker.LastName = LastName;
+                    dbConnection.UpdateWorker(EditWorker);
+                    workerId = EditWorker.Id;
+                }
 
                 if (AddToTeamChecked)
                 {

@@ -17,7 +17,7 @@ namespace TaskManager
 
         private void EditMenuItem_Click(object sender, RoutedEventArgs e)
         {
-
+            viewModel.Edit(dataGrid.SelectedItem);
         }
 
         private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)

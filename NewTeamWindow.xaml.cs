@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using TaskManager.Entities;
 using TaskManager.ViewModels;
 
 namespace TaskManager
@@ -6,10 +7,10 @@ namespace TaskManager
     public partial class NewTeamWindow : Window
     {
         NewTeamViewModel viewModel;
-        public NewTeamWindow()
+        public NewTeamWindow(Team editTeam = null)
         {
             InitializeComponent();
-            viewModel = new NewTeamViewModel();
+            viewModel = new NewTeamViewModel(editTeam);
             DataContext = viewModel;
         }
 

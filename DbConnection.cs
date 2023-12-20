@@ -724,6 +724,14 @@ namespace TaskManager
                     RemoveTaskFromProject(taskId);
                 }
 
+                // Odstranění projektu z tabulky TeamProjects
+                string removeTeamProjectsQuery = "DELETE FROM TeamProjects WHERE ProjectId = @ProjectId";
+                using (SQLiteCommand removeTeamProjectsCommand = new SQLiteCommand(removeTeamProjectsQuery, connection))
+                {
+                    removeTeamProjectsCommand.Parameters.AddWithValue("@ProjectId", projectId);
+                    removeTeamProjectsCommand.ExecuteNonQuery();
+                }
+
                 // Odstranění projektu z tabulky Projects
                 string removeProjectQuery = "DELETE FROM Projects WHERE Id = @ProjectId";
                 using (SQLiteCommand removeProjectCommand = new SQLiteCommand(removeProjectQuery, connection))
@@ -733,6 +741,7 @@ namespace TaskManager
                 }
             }
         }
+
 
         public void RemoveTask(int taskId)
         {
@@ -888,5 +897,84 @@ namespace TaskManager
             }
             return tasks;
         }
+
+        public void UpdateWorker(Worker worker)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string updateQuery = "UPDATE Workers SET FirstName = @FirstName, LastName = @LastName, TeamId = @TeamId WHERE Id = @Id";
+                using (SQLiteCommand command = new SQLiteCommand(updateQuery, connection))
+                {
+                    command.Parameters.AddWithValue("@FirstName", worker.FirstName);
+                    command.Parameters.AddWithValue("@LastName", worker.LastName);
+                    command.Parameters.AddWithValue("@TeamId", worker.TeamId);
+                    command.Parameters.AddWithValue("@Id", worker.Id);
+
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+        public void UpdateTeam(Team team)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Aktualizujeme tým v tabulce Teams
+                string updateTeamQuery = "UPDATE Teams SET Name = @Name WHERE Id = @Id";
+                using (SQLiteCommand teamCommand = new SQLiteCommand(updateTeamQuery, connection))
+                {
+                    teamCommand.Parameters.AddWithValue("@Id", team.Id);
+                    teamCommand.Parameters.AddWithValue("@Name", team.Name);
+
+                    teamCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void UpdateProject(Project project)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Aktualizujeme projekt v tabulce Projects
+                string updateProjectQuery = "UPDATE Projects SET Name = @Name, TeamId = @TeamId WHERE Id = @Id";
+                using (SQLiteCommand projectCommand = new SQLiteCommand(updateProjectQuery, connection))
+                {
+                    projectCommand.Parameters.AddWithValue("@Id", project.Id);
+                    projectCommand.Parameters.AddWithValue("@Name", project.Name);
+                    projectCommand.Parameters.AddWithValue("@TeamId", project.TeamId);
+
+                    projectCommand.ExecuteNonQuery(); // Provedeme aktualizaci v databázi.
+                }
+            }
+        }
+
+        public void UpdateTaskItem(TaskItem taskItem)
+        {
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                // Aktualizujeme úkol v tabulce Tasks
+                string updateTaskItemQuery = "UPDATE Tasks SET Name = @Name, Description = @Description, Priority = @Priority, Status = @Status, ProjectId = @ProjectId, WorkerId = @WorkerId WHERE Id = @Id";
+                using (SQLiteCommand taskItemCommand = new SQLiteCommand(updateTaskItemQuery, connection))
+                {
+                    taskItemCommand.Parameters.AddWithValue("@Id", taskItem.Id);
+                    taskItemCommand.Parameters.AddWithValue("@Name", taskItem.Name);
+                    taskItemCommand.Parameters.AddWithValue("@Description", taskItem.Description);
+                    taskItemCommand.Parameters.AddWithValue("@Priority", taskItem.Priority);
+                    taskItemCommand.Parameters.AddWithValue("@Status", taskItem.Status);
+                    taskItemCommand.Parameters.AddWithValue("@ProjectId", taskItem.ProjectId);
+                    taskItemCommand.Parameters.AddWithValue("@WorkerId", taskItem.WorkerId);
+
+                    taskItemCommand.ExecuteNonQuery(); // Provedeme aktualizaci v databázi.
+                }
+            }
+        }
+
     }
 }

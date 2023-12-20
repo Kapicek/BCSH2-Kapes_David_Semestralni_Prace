@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using TaskManager.Entities;
 using TaskManager.ViewModels;
 
 namespace TaskManager
@@ -6,12 +7,17 @@ namespace TaskManager
     public partial class NewWorkerWindow : Window
     {
         NewWorkerViewModel viewModel;
-        public NewWorkerWindow()
+        public NewWorkerWindow(Worker editWorker = null)
         {
             InitializeComponent();
-            viewModel = new NewWorkerViewModel();
+            viewModel = new NewWorkerViewModel(editWorker);
             DataContext = viewModel;
+            if (editWorker != null && editWorker.TeamId != 0)
+            {
+                AddToTeamCheckBox.Visibility = Visibility.Collapsed;
+            }
         }
+
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {

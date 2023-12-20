@@ -85,7 +85,7 @@ namespace TaskManager {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/TaskManager;V1.0.0.0;component/newworkerwindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/TaskManager;component/newworkerwindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\NewWorkerWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

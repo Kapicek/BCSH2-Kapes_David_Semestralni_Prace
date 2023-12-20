@@ -14,6 +14,10 @@ namespace TaskManager.ViewModels
         private bool addToProjectChecked;
         private Project selectedProject;
 
+        private TaskItem EditTaskItem { get; set; }
+
+        public NewTaskItemViewModel() { }
+
         public ObservableCollection<Project> Projects { get; set; }
 
         public string Name
@@ -76,19 +80,22 @@ namespace TaskManager.ViewModels
             }
         }
 
-        public NewTaskItemViewModel()
+        public NewTaskItemViewModel(TaskItem editTaskItem)
         {
             dbConnection = new DbConnection();
             dbConnection.CreateTables();
 
             Projects = new ObservableCollection<Project>(dbConnection.GetProjects());
-        }
 
-        public bool ValidateInput()
-        {
-            // Validace vstupních hodnot, vrátí true, pokud jsou všechny hodnoty platné.
-            return !string.IsNullOrWhiteSpace(Name) && !string.IsNullOrWhiteSpace(Description) &&
-                   !string.IsNullOrWhiteSpace(Priority) && !string.IsNullOrWhiteSpace(Status);
+            EditTaskItem = editTaskItem;
+
+            if (EditTaskItem != null)
+            {
+                name = editTaskItem.Name;
+                description = editTaskItem.Description;
+                priority = editTaskItem.Priority;
+                status = editTaskItem.Status;
+            }
         }
 
         public bool OK()
@@ -101,17 +108,25 @@ namespace TaskManager.ViewModels
             }
             else
             {
-                if (!addToProjectChecked)
+                int taskItemId;
+                if (EditTaskItem == null)
                 {
-                    dbConnection.InsertTaskItem(new TaskItem(Name, Description, Priority, Status));
-                    return true;
+                    taskItemId = dbConnection.InsertTaskItem(new TaskItem(Name, Description, Priority, Status));
                 }
                 else
                 {
+                    EditTaskItem.Name = Name;
+                    EditTaskItem.Description = Description;
+                    EditTaskItem.Priority = Priority;
+                    EditTaskItem.Status = Status;
+                    dbConnection.UpdateTaskItem(EditTaskItem);
+                    taskItemId = EditTaskItem.Id;
+                }
+                if (addToProjectChecked)
+                {
                     if (selectedProject != null)
                     {
-                        int id = dbConnection.InsertTaskItem(new TaskItem(Name, Description, Priority, Status));
-                        dbConnection.AddTaskToProject(id, selectedProject.Id);
+                        dbConnection.AddTaskToProject(taskItemId, selectedProject.Id);
                         return true;
                     }
                     else
@@ -121,16 +136,6 @@ namespace TaskManager.ViewModels
                 }
             }
             return false;
-        }
-
-        public void AddTaskItem()
-        {
-            int taskId = dbConnection.InsertTaskItem(new TaskItem(Name, Description, Priority, Status));
-
-            if (AddToProjectChecked && SelectedProject != null)
-            {
-                dbConnection.AddTaskToProject(taskId, SelectedProject.Id);
-            }
         }
     }
 }

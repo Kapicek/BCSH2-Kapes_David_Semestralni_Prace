@@ -9,6 +9,7 @@ namespace TaskManager.ViewModels
 
         private DbConnection dbConnection;
         private Category category;
+        public string categoryName = "Žádné";
         private ObservableCollection<object> items;
 
         public ObservableCollection<object> Items
@@ -26,7 +27,7 @@ namespace TaskManager.ViewModels
         public ICommand LoadTeamsCommand => new RelayCommand(LoadTeams);
         public ICommand LoadWorkersCommand => new RelayCommand(LoadWorkers);
         public ICommand AddNewCommand => new RelayCommand(AddNew);
-
+        public ICommand AssignTask => new RelayCommand(AssignTaskToWorker);
         public MainViewModel()
         {
             dbConnection = new DbConnection();
@@ -34,28 +35,43 @@ namespace TaskManager.ViewModels
             LoadWorkers();
         }
 
+        public string CategoryName
+        {
+            get => categoryName;
+            set
+            {
+                categoryName = value;
+                OnPropertyChanged(nameof(CategoryName));
+            }
+        }
+
+        public void AssignTaskToWorker() { }
         public void LoadProjects()
         {
             Items = new ObservableCollection<object>(dbConnection.GetProjects());
             category = Category.Projects;
+            CategoryName = "Projekty";
         }
 
         public void LoadTaskItems()
         {
             Items = new ObservableCollection<object>(dbConnection.GetTasks());
             category = Category.TaskItems;
+            CategoryName = "Úkoly";
         }
 
         public void LoadTeams()
         {
             Items = new ObservableCollection<object>(dbConnection.GetTeams());
             category = Category.Teams;
+            CategoryName = "Týmy";
         }
 
         public void LoadWorkers()
         {
             Items = new ObservableCollection<object>(dbConnection.GetWorkers());
             category = Category.Workers;
+            CategoryName = "Pracovníci";
         }
         public void AddNew()
         {
@@ -84,35 +100,67 @@ namespace TaskManager.ViewModels
             }
         }
 
-        public void Edit()
+        public void Edit(object SelectedItem)
         {
-
+            if (SelectedItem != null)
+            {
+                switch (category)
+                {
+                    case Category.Workers:
+                        Worker selectedWorker = (Worker)SelectedItem;
+                        NewWorkerWindow newWorkerWindow = new NewWorkerWindow(selectedWorker);
+                        newWorkerWindow.ShowDialog();
+                        LoadWorkers();
+                        break;
+                    case Category.Projects:
+                        Project selectedProject = (Project)SelectedItem;
+                        NewProjectWindow newProjectWindow = new NewProjectWindow(selectedProject);
+                        newProjectWindow.ShowDialog();
+                        LoadProjects();
+                        break;
+                    case Category.TaskItems:
+                        TaskItem selectedTaskItem = (TaskItem)SelectedItem;
+                        NewTaskItemWindow newTaskItemWindow = new NewTaskItemWindow(selectedTaskItem);
+                        newTaskItemWindow.ShowDialog();
+                        LoadTaskItems();
+                        break;
+                    case Category.Teams:
+                        Team selectedTeam = (Team)SelectedItem;
+                        NewTeamWindow newTeamWindow = new NewTeamWindow(selectedTeam);
+                        newTeamWindow.ShowDialog();
+                        LoadTeams();
+                        break;
+                }
+            }
         }
 
         public void Delete(object SelectedItem)
         {
-            switch (category)
+            if (SelectedItem != null)
             {
-                case Category.Workers:
-                    Worker selectedWorker = (Worker)SelectedItem;
-                    dbConnection.RemoveWorker(selectedWorker.Id);
-                    LoadWorkers();
-                    break;
-                case Category.Projects:
-                    Project selectedProject = (Project)SelectedItem;
-                    dbConnection.RemoveProject(selectedProject.Id);
-                    LoadProjects();
-                    break;
-                case Category.TaskItems:
-                    TaskItem selectedTaskItem = (TaskItem)SelectedItem;
-                    dbConnection.RemoveTask(selectedTaskItem.Id);
-                    LoadTaskItems();
-                    break;
-                case Category.Teams:
-                    Team selectedTeam = (Team)SelectedItem;
-                    dbConnection.RemoveTeam(selectedTeam.Id);
-                    LoadTeams();
-                    break;
+                switch (category)
+                {
+                    case Category.Workers:
+                        Worker selectedWorker = (Worker)SelectedItem;
+                        dbConnection.RemoveWorker(selectedWorker.Id);
+                        LoadWorkers();
+                        break;
+                    case Category.Projects:
+                        Project selectedProject = (Project)SelectedItem;
+                        dbConnection.RemoveProject(selectedProject.Id);
+                        LoadProjects();
+                        break;
+                    case Category.TaskItems:
+                        TaskItem selectedTaskItem = (TaskItem)SelectedItem;
+                        dbConnection.RemoveTask(selectedTaskItem.Id);
+                        LoadTaskItems();
+                        break;
+                    case Category.Teams:
+                        Team selectedTeam = (Team)SelectedItem;
+                        dbConnection.RemoveTeam(selectedTeam.Id);
+                        LoadTeams();
+                        break;
+                }
             }
         }
 

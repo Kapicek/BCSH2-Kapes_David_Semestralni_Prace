@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using TaskManager.Entities;
 using TaskManager.ViewModels;
 
 namespace TaskManager
@@ -6,11 +7,15 @@ namespace TaskManager
     public partial class NewTaskItemWindow : Window
     {
         NewTaskItemViewModel viewModel;
-        public NewTaskItemWindow()
+        public NewTaskItemWindow(TaskItem editTaskItem = null)
         {
             InitializeComponent();
-            viewModel = new NewTaskItemViewModel();
+            viewModel = new NewTaskItemViewModel(editTaskItem);
             DataContext = viewModel;
+            if (editTaskItem != null && editTaskItem.ProjectId != 0)
+            {
+                AddToProjectCheckBox.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void OK_Click(object sender, RoutedEventArgs e)

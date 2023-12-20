@@ -1,6 +1,6 @@
 ﻿namespace TaskManager.Entities
 {
-    class Worker
+    public class Worker
     {
         public int Id { get; set; }
         public string? FirstName { get; set; }

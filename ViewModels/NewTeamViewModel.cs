@@ -7,6 +7,8 @@ namespace TaskManager.ViewModels
     {
         private readonly DbConnection dbConnection;
         private string teamName;
+        private Team EditTeam { get; set; }
+        public NewTeamViewModel() { }
 
         public string TeamName
         {
@@ -18,10 +20,15 @@ namespace TaskManager.ViewModels
             }
         }
 
-        public NewTeamViewModel()
+        public NewTeamViewModel(Team editTeam)
         {
             dbConnection = new DbConnection();
             dbConnection.CreateTables();
+            EditTeam = editTeam;
+            if (EditTeam != null)
+            {
+                teamName = EditTeam.Name;
+            }
         }
 
         public bool OK()
@@ -33,7 +40,15 @@ namespace TaskManager.ViewModels
             }
             else
             {
-                dbConnection.InsertTeam(new Team(TeamName));
+                if (EditTeam != null)
+                {
+                    EditTeam.Name = teamName;
+                    dbConnection.UpdateTeam(EditTeam);
+                }
+                else
+                {
+                    dbConnection.InsertTeam(new Team(TeamName));
+                }
                 return true;
             }
         }
